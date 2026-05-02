@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  sentinel_agent:
+    image: python:3.11-slim
+    container_name: sentinel_agent
+    working_dir: /app
+    volumes:
+      - .:/app
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - BROKER_ENV=PAPER
+    depends_on:
+      - redis_cache
+    command: >
+      bash -c "pip install -r requirements.txt && python -m src.main"
+
+  redis_cache:
+    image: redis:7.2-alpine
+    container_name: sentinel_redis
+    ports:
+      - "6379:6379"
+    restart: always
